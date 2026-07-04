@@ -203,6 +203,8 @@ export default {
     clashSub: "Clash 订阅",
     mixedPort: "混合入站端口",
     tun: "Tun 入站",
+    clashNoDefGrp: "禁用默认分组",
+    clashSprtAll: "支持 'all'",
   },
   client: {
     name: "名称",

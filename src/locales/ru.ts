@@ -203,6 +203,8 @@ export default {
     clashSub: "Clash подписка",
     mixedPort: "Смешанный порт",
     tun: "Tun инбоунд",
+    clashNoDefGrp: "Отключить группы по умолчанию",
+    clashSprtAll: "Поддержка 'all'",
   },
   client: {
     name: "Имя",

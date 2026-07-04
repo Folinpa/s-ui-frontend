@@ -203,6 +203,8 @@ export default {
     clashSub: "Clash Subscription",
     mixedPort: "Mixed Inbound Port",
     tun: "Tun Inbound",
+    clashNoDefGrp: "Disable Default Groups",
+    clashSprtAll: "Support 'all'",
   },
   client: {
     name: "Name",

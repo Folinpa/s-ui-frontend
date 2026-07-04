@@ -203,6 +203,8 @@ export default {
     clashSub: "سابسکریپشن CLASH",
     mixedPort: "ورودی Mixed",
     tun: "ورودی TUN",
+    clashNoDefGrp: "غیرفعال‌سازی گروه‌های پیش‌فرض",
+    clashSprtAll: "پشتیبانی از 'all'",
   },
   client: {
     name: "نام",

@@ -195,6 +195,8 @@ const settings = ref({
 	subURI: "",
   subJsonExt: "",
   subClashExt: "",
+  subClashNoDefGrp: "false",
+  subClashSprtAll: "false",
   globalReset: "",
 })
 

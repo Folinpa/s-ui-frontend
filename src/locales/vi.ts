@@ -203,6 +203,8 @@ export default {
     clashSub: "Clash đăng ký",
     mixedPort: "Cổng khóa",
     tun: "Tun đăng ký",
+    clashNoDefGrp: "Tắt nhóm mặc định",
+    clashSprtAll: "Hỗ trợ 'all'",
   },
   client: {
     name: "Tên",
