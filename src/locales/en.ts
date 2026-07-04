@@ -18,6 +18,7 @@ export default {
   network: "Network",
   copyToClipboard: "Copy to clipboard",
   docs: "Documentation",
+  donate: "Support this project ❤️",
   noData: "No data!",
   invalidLogin: "Invalid Login!",
   online: "Online",

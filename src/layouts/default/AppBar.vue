@@ -3,6 +3,17 @@
     <v-icon v-if="isMobile" icon="mdi-menu" @click="$emit('toggleDrawer')" />
     <span v-else style="width: 24px"></span>
     <v-app-bar-title :text="$t(<string>route.name)" class="align-center text-center " />
+    <v-btn
+      icon
+      variant="text"
+      href="https://donate.alireza0.dev"
+      target="_blank"
+      rel="noopener"
+      class="donate-btn"
+      v-tooltip="$t('donate')"
+    >
+      <v-icon icon="mdi-heart" color="red" size="1.5em" />
+    </v-btn>
     <v-menu>
       <template v-slot:activator="{ props }">
         <v-btn icon v-bind="props">

@@ -18,6 +18,7 @@ export default {
   network: "شبکه",
   copyToClipboard: "کپی در حافظه",
   docs: "مستندات",
+  donate: "از این پروژه حمایت کنید ❤️",
   noData: "بدون داده!",
   invalidLogin: "ورود نامعتبر!",
   online: "آنلاین",

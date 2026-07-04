@@ -18,6 +18,7 @@ export default {
   network: "Mạng",
   copyToClipboard: "Sao chép vào clipboard",
   docs: "Tài liệu",
+  donate: "Ủng hộ dự án ❤️",
   noData: "Không có dữ liệu!",
   invalidLogin: "Đăng nhập không hợp lệ!",
   online: "Trực tuyến",

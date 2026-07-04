@@ -18,6 +18,7 @@ export default {
   network: "Сеть",
   copyToClipboard: "Копировать в буфер обмена",
   docs: "Документация",
+  donate: "Поддержать проект ❤️",
   noData: "Нет данных!",
   invalidLogin: "Неверный логин!",
   online: "В сети",

@@ -18,6 +18,7 @@ export default {
   network: "网络",
   copyToClipboard: "复制到剪贴板",
   docs: "文档",
+  donate: "支持这个项目 ❤️",
   noData: "无数据！",
   invalidLogin: "登录无效！",
   online: "在线",
