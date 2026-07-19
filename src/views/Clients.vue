@@ -167,7 +167,6 @@
             color="success"
             density="compact"
             hide-details
-            inset
             @update:model-value="(val:any) => toggleEnable(item, !!val)"
           ></v-switch>
         </template>
