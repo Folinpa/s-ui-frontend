@@ -9,6 +9,7 @@ export const InTypes = {
   SOCKS: 'socks',
   HTTP: 'http',
   Shadowsocks: 'shadowsocks',
+  Snell: 'snell',
   VMess: 'vmess',
   Trojan: 'trojan',
   Naive: 'naive',
@@ -21,6 +22,7 @@ export const InTypes = {
   Tun: 'tun',
   Redirect: 'redirect',
   TProxy: 'tproxy',
+  Cloudflared: 'cloudflared',
 }
 
 type InType = typeof InTypes[keyof typeof InTypes]
@@ -174,6 +176,28 @@ export interface Tun extends InboundBasics {
   // include_package?: string[]
   // exclude_package?: string[]
 }
+export interface SnellUser {
+  name?: string
+  userkey: string
+}
+// Snell picks its extra options from the version: v5 carries obfs, v6 a mode.
+export interface Snell extends InboundBasics {
+  version: 5 | 6
+  psk: string
+  users?: SnellUser[]
+  obfs_mode?: 'none' | 'http' | 'tls'
+  mode?: 'default' | 'unshaped' | 'unsafe-raw'
+}
+export interface Cloudflared extends InboundBasics {
+  token: string
+  ha_connections?: number
+  protocol?: 'auto' | 'quic' | 'http2' | 'h2mux'
+  post_quantum?: boolean
+  edge_ip_version?: 0 | 4 | 6
+  datagram_version?: 'v2' | 'v3'
+  grace_period?: string
+  region?: string
+}
 export interface Redirect extends InboundBasics {}
 export interface TProxy extends InboundBasics {
   network?: "udp" | "tcp"
@@ -186,6 +210,7 @@ type InterfaceMap = {
   socks: SOCKS
   http: SOCKS
   shadowsocks: Shadowsocks
+  snell: Snell
   vmess: VMess
   trojan: Trojan
   naive: Naive
@@ -198,6 +223,7 @@ type InterfaceMap = {
   tun: Tun
   redirect: Redirect
   tproxy: TProxy
+  cloudflared: Cloudflared
 }
 
 // Create union type from InterfaceMap
@@ -210,6 +236,7 @@ const defaultValues: Record<InType, Inbound> = {
   socks: <SOCKS>{ type: InTypes.SOCKS },
   http: <HTTP>{ type: InTypes.HTTP, tls_id: 0 },
   shadowsocks: <Shadowsocks>{ type: InTypes.Shadowsocks, method: 'none' },
+  snell: <Snell>{ type: InTypes.Snell, version: 6, psk: '' },
   vmess: <VMess>{ type: InTypes.VMess, tls_id: 0, transport: {} },
   trojan: <Trojan>{ type: InTypes.Trojan, tls_id: 0, transport: {} },
   naive: <Naive>{ type: InTypes.Naive, tls_id: 0 },
@@ -232,6 +259,7 @@ const defaultValues: Record<InType, Inbound> = {
   tun: <Tun>{ type: InTypes.Tun, mtu: 9000, stack: 'system', udp_timeout: '5m', auto_route: false },
   redirect: <Redirect>{ type: InTypes.Redirect },
   tproxy: <TProxy>{ type: InTypes.TProxy },
+  cloudflared: <Cloudflared>{ type: InTypes.Cloudflared, token: '', protocol: 'auto' },
 }
 
 export function createInbound<T extends Inbound>(type: InType,json?: Partial<T>): Inbound {

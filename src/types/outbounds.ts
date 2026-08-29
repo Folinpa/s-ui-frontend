@@ -8,6 +8,7 @@ export const OutTypes = {
   SOCKS: 'socks',
   HTTP: 'http',
   Shadowsocks: 'shadowsocks',
+  Snell: 'snell',
   VMess: 'vmess',
   Trojan: 'trojan',
   Naive: 'naive',
@@ -21,6 +22,7 @@ export const OutTypes = {
   SSH: 'ssh',
   Selector: 'selector',
   URLTest: 'urltest',
+  Bridge: 'bridge',
 }
 
 type OutType = typeof OutTypes[keyof typeof OutTypes]
@@ -248,9 +250,11 @@ export type Outbound = InterfaceMap[keyof InterfaceMap]
 // Create defaultValues object dynamically
 const defaultValues: Record<OutType, Outbound> = {
   direct: { type: OutTypes.Direct },
+  bridge: { type: OutTypes.Bridge },
   socks: { type: OutTypes.SOCKS, version: "5" },
   http: { type: OutTypes.HTTP, tls: {} },
   shadowsocks: { type: OutTypes.Shadowsocks, method: 'none', multiplex: {} },
+  snell: { type: OutTypes.Snell, version: 6, psk: '' },
   vmess: { type: OutTypes.VMess, tls: {}, multiplex: {}, transport: {}, security: 'auto', global_padding: false },
   trojan: { type: OutTypes.Trojan, tls: {}, multiplex: {}, transport: {} },
   naive: { type: OutTypes.Naive, tls: { enabled: true } },

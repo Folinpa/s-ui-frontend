@@ -23,11 +23,13 @@
           </v-col>
         </v-row>
 
-        <Listen :data="srv" :inTags="inTags" />
+        <Listen v-if="!NoListen.includes(srv.type)" :data="srv" :inTags="inTags" />
         <Derp v-if="srv.type == srvTypes.DERP" :data="srv" :inTags="inTags" :tsTags="tsTags" />
         <SSMapi v-if="srv.type == srvTypes.SSMAPI" :data="srv" :ssTags="ssTags" />
         <Ocm v-if="srv.type == srvTypes.OCM" :data="srv" />
         <Ccm v-if="srv.type == srvTypes.CCM" :data="srv" />
+        <Api v-if="srv.type == srvTypes.API" :data="srv" />
+        <OomKiller v-if="srv.type == srvTypes.OOMKiller" :data="srv" />
         <InTLS v-if="HasTls.includes(srv.type)"  :inbound="srv" :tlsConfigs="tlsConfigs" :tls_id="srv.tls_id" />
       </v-card-text>
       <v-card-actions>
@@ -60,6 +62,8 @@ import Listen from '@/components/Listen.vue'
 import Derp from '@/components/services/Derp.vue'
 import Ocm from '@/components/services/Ocm.vue'
 import Ccm from '@/components/services/Ccm.vue'
+import Api from '@/components/services/Api.vue'
+import OomKiller from '@/components/services/OomKiller.vue'
 import InTLS from '@/components/tls/InTLS.vue'
 import SSMapi from '@/components/services/SSMAPI.vue'
 import Data from '@/store/modules/data'
@@ -73,7 +77,9 @@ export default {
       tab: "t1",
       loading: false,
       srvTypes: SrvTypes,
-      HasTls: [SrvTypes.DERP, SrvTypes.SSMAPI, SrvTypes.OCM, SrvTypes.CCM],
+      HasTls: [SrvTypes.DERP, SrvTypes.SSMAPI, SrvTypes.OCM, SrvTypes.CCM, SrvTypes.API],
+      // oom-killer has no listen options at all
+      NoListen: [SrvTypes.OOMKiller],
     }
   },
   methods: {
@@ -98,7 +104,13 @@ export default {
       // Tag change only in add service
       const tag = this.$props.id > 0 ? this.srv.tag : this.srv.type + "-" + RandomUtil.randomSeq(3)
       // Use previous data
-      const prevConfig = { id: this.srv.id, tag: tag, listen: this.srv.listen, listen_port: this.srv.listen_port }
+      // Only carry the listen settings across to a type that actually listens;
+      // sing-box rejects listen options on oom-killer.
+      const prevConfig: any = { id: this.srv.id, tag: tag }
+      if (!this.NoListen.includes(this.srv.type)) {
+        prevConfig.listen = this.srv.listen
+        prevConfig.listen_port = this.srv.listen_port
+      }
       this.srv = createSrv(this.srv.type, prevConfig)
     },
     closeModal() {
@@ -111,6 +123,14 @@ export default {
       // check duplicate tag
       const isDuplicatedTag = Data().checkTag("service",this.srv.id, this.srv.tag)
       if (isDuplicatedTag) return
+
+      // A service switched over from a listening type may still carry listen
+      // settings the new type does not accept.
+      if (this.NoListen.includes(this.srv.type)) {
+        delete (<any>this.srv).listen
+        delete (<any>this.srv).listen_port
+        delete (<any>this.srv).tls_id
+      }
 
       // save data
       this.loading = true
@@ -126,6 +146,6 @@ export default {
       }
     },
   },
-  components: { DocLink, Listen, InTLS, Derp, Ocm, Ccm, SSMapi },
+  components: { DocLink, Listen, InTLS, Derp, Ocm, Ccm, SSMapi, Api, OomKiller },
 }
 </script>
