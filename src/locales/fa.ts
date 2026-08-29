@@ -509,7 +509,6 @@ export default {
     cacheCapacity: "ظرفیت cache",
     disableCache: "غیرفعال‌سازی cache",
     disableExpire: "بدون انقضا",
-    independentCache: "استقلال cache",
     reverseMapping: "نگاشت معکوس",
     domainStrategy: "استراتژی دامنه",
     local: { preferGo: "ترجیح Go" },

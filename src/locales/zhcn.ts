@@ -509,7 +509,6 @@ export default {
     cacheCapacity: "缓存容量",
     disableCache: "禁用缓存",
     disableExpire: "禁用过期",
-    independentCache: "独立缓存",
     reverseMapping: "反向映射",
     domainStrategy: "域名解析策略",
     local: { preferGo: "优先使用 Go" },

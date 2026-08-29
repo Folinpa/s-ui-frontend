@@ -111,7 +111,7 @@
         </v-card-subtitle>
         <v-card-text>
           <v-row><v-col>{{ $t('ruleset.format') }}</v-col><v-col>{{ item.format }}</v-col></v-row>
-          <v-row><v-col>{{ $t('objects.outbound') }}</v-col><v-col>{{ item.download_detour ?? '-' }}</v-col></v-row>
+          <v-row><v-col>{{ $t('objects.outbound') }}</v-col><v-col>{{ item.http_client?.detour ?? '-' }}</v-col></v-row>
           <v-row><v-col>{{ $t('actions.update') }}</v-col><v-col>{{ item.update_interval ?? '-' }}</v-col></v-row>
         </v-card-text>
         <v-divider></v-divider>

@@ -70,12 +70,19 @@ export interface rule extends generalRule {
   default_interface_address?: string[]
 }
 
+// Transport used to download a remote rule-set. Replaces the download_detour
+// option deprecated in sing-box 1.14.
+export interface HttpClient {
+  detour?: string
+  disable_empty_direct_check?: boolean
+}
+
 export interface ruleset {
   type: 'local' | 'remote'
   tag: string
   format: 'source' | 'binary'
   path?: string
   url?: string
-  download_detour?: string
+  http_client?: HttpClient
   update_interval?: string
 }

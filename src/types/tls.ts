@@ -23,7 +23,7 @@ export interface iTls {
   client_certificate?: string[]
   client_certificate_path?: string[]
   client_certificate_public_key_sha256?: string[]
-  acme?: acme
+  certificate_provider?: acme
   ech?: ech
   reality?: reality
   store?: 'mozilla' | 'chrome'
@@ -31,7 +31,11 @@ export interface iTls {
   kernel_rx?: boolean
 }
 
+// An ACME certificate provider. Since sing-box 1.14 this lives under
+// tls.certificate_provider with an explicit type instead of an inline tls.acme
+// block; the fields are otherwise unchanged.
 export interface acme {
+  type: 'acme'
   domain: string[]
   data_directory?: string
   default_server_name?: string

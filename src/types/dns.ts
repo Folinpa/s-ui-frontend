@@ -5,7 +5,6 @@ export interface Dns {
   strategy?: string
   disable_cache?: boolean,
   disable_expire?: boolean,
-  independent_cache?: boolean,
   cache_capacity?: number,
   reverse_mapping?: boolean,
   client_subnet?: string,

@@ -509,7 +509,6 @@ export default {
     cacheCapacity: "Вместимость кэша",
     disableCache: "Отключить кэш",
     disableExpire: "Отключить истечение",
-    independentCache: "Независимый кэш",
     reverseMapping: "Обратное отображение",
     domainStrategy: "Стратегия домена",
     local: { preferGo: "Предпочитать Go" },

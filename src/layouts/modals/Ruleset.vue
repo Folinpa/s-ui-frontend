@@ -45,8 +45,7 @@
               :label="$t('objects.outbound')"
               :items="outTags"
               clearable
-              @click:clear="delete rule_set.download_detour"
-              v-model="rule_set.download_detour">
+              v-model="download_detour">
             </v-select>
           </v-col>
           <v-col cols="12" sm="6" md="4">
@@ -105,7 +104,7 @@ export default {
     updateType(t:string) {
       if (t == 'local') {
         delete this.rule_set.url
-        delete this.rule_set.download_detour
+        delete this.rule_set.http_client
         delete this.rule_set.update_interval
       } else {
         delete this.rule_set.path
@@ -121,6 +120,15 @@ export default {
     }
   },
   computed: {
+    // The select edits http_client.detour; an empty choice drops http_client
+    // entirely so a local rule-set never carries an empty transport.
+    download_detour: {
+      get() { return this.rule_set.http_client?.detour },
+      set(v: string | undefined) {
+        if (v) this.rule_set.http_client = { detour: v, disable_empty_direct_check: true }
+        else delete this.rule_set.http_client
+      }
+    },
     update_intervals: {
       get() { return this.rule_set.update_interval != undefined ? parseInt(this.rule_set.update_interval.replace('d','')) : 0 },
       set(v:number) { this.rule_set.update_interval = v>0 ?  v + 'd' : undefined }

@@ -2,6 +2,7 @@ import { Inbound } from './inbounds'
 import { Outbound } from './outbounds'
 import { Dns } from './dns'
 import { Dial } from './dial'
+import { HttpClient } from './rules'
 
 interface Log {
   disabled?: boolean
@@ -65,7 +66,7 @@ interface RouteRuleSet {
   format: string
   path?: string
   url?: string
-  download_detour?: string
+  http_client?: HttpClient
   update_interval?: string
 }
 

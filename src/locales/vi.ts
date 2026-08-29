@@ -509,7 +509,6 @@ export default {
     cacheCapacity: "Nội dung bộ nhớ",
     disableCache: "Vô hiệu hóa bộ nhớ đệm",
     disableExpire: "Vô hiệu hóa hệ thống",
-    independentCache: "Bộ nhớ rẽ",
     reverseMapping: "Màm mạng tên lập",
     domainStrategy: "Chiến lược Domain",
     local: { preferGo: "Ưu tiên Go" },

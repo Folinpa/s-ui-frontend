@@ -509,7 +509,6 @@ export default {
     cacheCapacity: "Cache Capacity",
     disableCache: "Disable Cache",
     disableExpire: "Disable Expire",
-    independentCache: "Independent Cache",
     reverseMapping: "Reverse Mapping",
     domainStrategy: "Domain Strategy",
     local: {

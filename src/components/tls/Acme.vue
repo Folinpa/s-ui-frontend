@@ -182,11 +182,16 @@ export default {
   },
   computed: {
     acme() {
-      return <acme>this.$props.tls.acme
+      // Only an ACME provider is editable here; any other provider type is
+      // left untouched rather than being reinterpreted as ACME. Every use is
+      // behind v-if="enabled", so this keeps the non-optional shape the rest
+      // of the component expects.
+      const provider = this.$props.tls.certificate_provider
+      return <acme>(provider?.type === 'acme' ? provider : undefined)
     },
     enabled: {
       get() { return this.acme != undefined },
-      set(v: boolean) { this.$props.tls.acme = v ? { domain: [] } : undefined }
+      set(v: boolean) { this.$props.tls.certificate_provider = v ? { type: 'acme', domain: [] } : undefined }
     },
     domains: {
       get() { return this.acme?.domain ? this.acme.domain.join(',') : "" },

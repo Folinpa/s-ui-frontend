@@ -3,7 +3,7 @@ export interface CatalogRuleset {
   type: 'remote'
   format: 'binary'
   url: string
-  download_detour: string
+  http_client: { detour: string; disable_empty_direct_check: boolean }
 }
 
 const srs = (kind: 'geosite' | 'geoip', name: string): string =>
@@ -14,7 +14,7 @@ const entry = (tag: string, url: string): CatalogRuleset => ({
   type: 'remote',
   format: 'binary',
   url,
-  download_detour: 'direct',
+  http_client: { detour: 'direct', disable_empty_direct_check: true },
 })
 
 export const geoCatalog: CatalogRuleset[] = [

@@ -124,7 +124,7 @@ export default {
     save() {
       const toAdd = this.preview.filter((i: any) => !i.exists).map((item: any) => {
         const rs: any = { type: 'remote', tag: item.tag, format: item.format, url: item.url }
-        if (this.detour) rs.download_detour = this.detour
+        if (this.detour) rs.http_client = { detour: this.detour, disable_empty_direct_check: true }
         if (this.interval > 0) rs.update_interval = this.interval + 'd'
         return rs
       })
