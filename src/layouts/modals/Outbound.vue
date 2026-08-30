@@ -117,7 +117,6 @@ import Dial from '@/components/Dial.vue'
 import Multiplex from '@/components/Multiplex.vue'
 import Transport from '@/components/Transport.vue'
 import OutTLS from '@/components/tls/OutTLS.vue'
-import Direct from '@/components/protocols/Direct.vue'
 import Socks from '@/components/protocols/Socks.vue'
 import Http from '@/components/protocols/Http.vue'
 import Shadowsocks from '@/components/protocols/Shadowsocks.vue'
@@ -212,7 +211,7 @@ export default {
     },
   },
   components: { DocLink, Dial, Multiplex, Transport, OutTLS,
-    Direct, Socks, Http, Shadowsocks, Vmess, Trojan,
+    Socks, Http, Shadowsocks, Vmess, Trojan,
     Wireguard, Hysteria, Naive, ShadowTls, Vless, Tuic,
     Hysteria2, AnyTls, Tor, Ssh, Selector, UrlTest, Snell, Bridge }
 }

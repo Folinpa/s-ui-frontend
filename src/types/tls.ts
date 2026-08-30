@@ -155,8 +155,6 @@ export interface oTls {
   record_fragment?: boolean
   ech?: {
     enabled: boolean
-    pq_signature_schemes_enabled?: boolean
-    dynamic_record_sizing_disabled?: boolean
     config?: string[]
     config_path?: string
     query_server_name?: string
@@ -188,8 +186,6 @@ export const defaultOutTls: oTls = {
   },
   ech: {
     enabled: true,
-    pq_signature_schemes_enabled: false,
-    dynamic_record_sizing_disabled: false,
     config_path: "",
   }
 }

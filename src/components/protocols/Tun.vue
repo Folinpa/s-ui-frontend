@@ -32,9 +32,6 @@
           hide-details
         ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="4">
-        <v-switch v-model="data.endpoint_independent_nat" color="primary" label="Independent NAT" hide-details></v-switch>
-      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">

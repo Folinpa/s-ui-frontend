@@ -124,5 +124,4 @@ export interface dnsRule extends generalDnsRule {
   clash_mode?: string
   rule_set?: string[]
   rule_set_ip_cidr_match_source?: boolean
-  rule_set_ip_cidr_accept_empty?: boolean
 }

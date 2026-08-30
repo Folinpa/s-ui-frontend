@@ -155,7 +155,6 @@ export interface Tun extends InboundBasics {
   interface_name?: string
   address?: string[]
   mtu?: number
-  endpoint_independent_nat?: boolean
   udp_timeout?: string
   stack?: string
   auto_route?: boolean
