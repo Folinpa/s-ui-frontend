@@ -5,6 +5,7 @@
     :id="modal.id"
     :data="modal.data"
     :tags="endpointTags"
+    :tlsConfigs="tlsConfigs"
     @close="closeModal"
   />
   <Stats
@@ -200,6 +201,10 @@ const endpoints = computed((): Endpoint[] => {
 
 const endpointTags = computed((): any[] => {
   return endpoints.value?.map((o:Endpoint) => o.tag)
+})
+
+const tlsConfigs = computed((): any[] => {
+  return <any[]> Data().tlsConfigs
 })
 
 const onlines = computed(() => {

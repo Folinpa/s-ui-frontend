@@ -14,7 +14,9 @@
         <v-text-field
           :label="$t('types.snell.psk')"
           hide-details
-          v-model="data.psk">
+          v-model="data.psk"
+          :append-inner-icon="direction == 'in' ? 'mdi-refresh' : undefined"
+          @click:append-inner="generatePsk">
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4" v-if="direction === 'out'">
@@ -70,6 +72,8 @@
 </template>
 
 <script lang="ts">
+import RandomUtil from '@/plugins/randomUtil'
+
 export default {
   props: ['data', 'direction'],
   data() {
@@ -85,6 +89,12 @@ export default {
         { title: 'Unsafe Raw', value: 'unsafe-raw' },
       ],
     }
+  },
+  methods: {
+    generatePsk() {
+      // sing-box requires 12-255 bytes.
+      this.$props.data.psk = RandomUtil.randomSeq(32)
+    },
   },
   computed: {
     // Inbounds support v5 and v6, outbounds v4 and v6.

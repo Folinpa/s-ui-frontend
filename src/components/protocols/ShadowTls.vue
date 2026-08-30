@@ -98,6 +98,7 @@
 
 <script lang="ts">
 import { ShadowTLS } from '@/types/inbounds'
+import RandomUtil from '@/plugins/randomUtil'
 import Dial from '../Dial.vue'
 
 export default {
@@ -132,7 +133,7 @@ export default {
           break
         case 2:
           if (!this.Inbound.password) {
-            this.Inbound.password = ""
+            this.Inbound.password = RandomUtil.randomSeq(16)
           }
           if (!this.Inbound.handshake_for_server_name) {
             this.Inbound.handshake_for_server_name = {}

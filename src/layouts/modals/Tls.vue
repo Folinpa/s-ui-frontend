@@ -235,6 +235,117 @@
               </v-col>
             </template>
           </v-row>
+          <!-- Mutual TLS: the server verifies client certificates, and the
+               client presents one. Endpoints reuse these when they reference
+               this TLS config. Paths and inline text are exclusive, matching
+               how the server certificate above is entered. -->
+          <template v-if="optionClientAuth">
+            <v-divider class="my-2"></v-divider>
+            <v-card-subtitle>{{ $t('tls.mutual') }}</v-card-subtitle>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  hide-details
+                  :label="$t('tls.clientAuth')"
+                  :items="clientAuthTypes"
+                  clearable
+                  @click:clear="inTls.client_authentication = undefined"
+                  v-model="inTls.client_authentication">
+                </v-select>
+              </v-col>
+              <v-col cols="auto" align-self="center">
+                <v-btn-toggle v-model="useClientPath"
+                  class="rounded-xl"
+                  density="compact"
+                  variant="outlined"
+                  shaped
+                  mandatory>
+                  <v-btn @click="clearClientText">{{ $t('tls.usePath') }}</v-btn>
+                  <v-btn @click="clearClientPaths">{{ $t('tls.useText') }}</v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
+
+            <!-- Server side: the CAs a presented client certificate is checked against -->
+            <template v-if="useClientPath == 0">
+              <v-row>
+                <v-col cols="12">
+                  <v-combobox
+                    hide-details
+                    :label="$t('tls.clientCaPath')"
+                    multiple
+                    chips
+                    closable-chips
+                    v-model="inTls.client_certificate_path">
+                  </v-combobox>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-row>
+                <v-col cols="12">
+                  <v-textarea
+                    hide-details
+                    :label="$t('tls.clientCa')"
+                    v-model="clientCaText">
+                  </v-textarea>
+                </v-col>
+              </v-row>
+            </template>
+
+            <!-- Client side: the certificate and key this panel presents -->
+            <template v-if="useClientPath == 0">
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    hide-details
+                    :label="$t('tls.clientCertPath')"
+                    v-model="outTls.client_certificate_path">
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    hide-details
+                    :label="$t('tls.clientKeyPath')"
+                    v-model="outTls.client_key_path">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-row>
+                <v-col cols="12">
+                  <v-textarea
+                    hide-details
+                    :label="$t('tls.clientCert')"
+                    v-model="clientCertText">
+                  </v-textarea>
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    hide-details
+                    :label="$t('tls.clientKey')"
+                    v-model="clientKeyText">
+                  </v-textarea>
+                </v-col>
+              </v-row>
+            </template>
+
+            <v-row>
+              <v-col cols="12">
+                <v-combobox
+                  hide-details
+                  :label="$t('tls.clientPin')"
+                  multiple
+                  chips
+                  closable-chips
+                  clearable
+                  @click:clear="inTls.client_certificate_public_key_sha256 = undefined"
+                  v-model="inTls.client_certificate_public_key_sha256">
+                </v-combobox>
+              </v-col>
+            </v-row>
+          </template>
           <v-row v-if="outTls.utls != undefined">
             <v-col cols="12" sm="6" md="4">
               <v-select
@@ -271,6 +382,9 @@
                     </v-list-item>
                     <v-list-item>
                       <v-switch v-model="optionFP" color="primary" label="UTLS" hide-details></v-switch>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-switch v-model="optionClientAuth" color="primary" :label="$t('tls.mutual')" hide-details></v-switch>
                     </v-list-item>
                     <v-list-item>
                       <v-switch v-model="optionStore" color="primary" :label="$t('tls.store')" hide-details></v-switch>
@@ -364,6 +478,14 @@ export default {
         { title: "Mozilla", value: "mozilla" },
         { title: "Chrome", value: "chrome" },
       ],
+      useClientPath: 0,
+      clientAuthTypes: [
+        { title: "No", value: "no" },
+        { title: "Request", value: "request" },
+        { title: "Require Any", value: "require-any" },
+        { title: "Verify If Given", value: "verify-if-given" },
+        { title: "Require And Verify", value: "require-and-verify" },
+      ],
       fingerprints: [
         { title: "Chrome", value: "chrome" },
         { title: "Firefox", value: "firefox" },
@@ -379,6 +501,18 @@ export default {
     }
   },
   methods: {
+    // Paths and inline text are two ways of giving the same material, so
+    // switching between them drops whichever one is being left behind.
+    clearClientText() {
+      this.inTls.client_certificate = undefined
+      this.outTls.client_certificate = undefined
+      this.outTls.client_key = undefined
+    },
+    clearClientPaths() {
+      this.inTls.client_certificate_path = undefined
+      this.outTls.client_certificate_path = undefined
+      this.outTls.client_key_path = undefined
+    },
     updateData(id: number) {
       if (id > 0) {
         const newData = <tls>JSON.parse(this.$props.data)
@@ -387,12 +521,18 @@ export default {
         if (this.tls.client == null) this.tls.client = {}
         this.tlsType = newData.server?.reality == undefined ? 0 : 1
         this.usePath = newData.server?.key == undefined ? 0 : 1
+        // A stored config that carries the certificates inline should open on
+        // the text side of the toggle.
+        this.useClientPath = (newData.server?.client_certificate == undefined
+          && newData.client?.client_certificate == undefined
+          && newData.client?.client_key == undefined) ? 0 : 1
         this.title = "edit"
       }
       else {
         this.tls = <tls>{ id: 0, name: '', server: {enabled: true}, client: {} }
         this.tlsType = 0
         this.usePath = 0
+        this.useClientPath = 0
         this.title = "add"
       }
     },
@@ -498,6 +638,18 @@ export default {
     outTls(): oTls {
       return this.tls.client
     },
+    clientCaText: {
+      get(): string { return this.inTls.client_certificate ? this.inTls.client_certificate.join('\n') : '' },
+      set(v: string) { this.inTls.client_certificate = v ? v.split('\n') : undefined }
+    },
+    clientCertText: {
+      get(): string { return this.outTls.client_certificate ? this.outTls.client_certificate.join('\n') : '' },
+      set(v: string) { this.outTls.client_certificate = v ? v.split('\n') : undefined }
+    },
+    clientKeyText: {
+      get(): string { return this.outTls.client_key ? this.outTls.client_key.join('\n') : '' },
+      set(v: string) { this.outTls.client_key = v ? v.split('\n') : undefined }
+    },
     certText: {
       get(): string { return this.inTls.certificate ? this.inTls.certificate.join('\n') : '' },
       set(v:string) { this.inTls.certificate = v.split('\n') }
@@ -535,6 +687,39 @@ export default {
       set(v: number) {
         if (this.inTls.reality){
           this.inTls.reality.max_time_difference = v > 0 ? v + 'm' : '1m'
+        }
+      }
+    },
+    // Mutual TLS spans both sides: the server side verifies the peer, the
+    // client side presents the credentials. The toggle is on when either
+    // half is configured.
+    optionClientAuth: {
+      get(): boolean {
+        return this.inTls.client_authentication != undefined
+          || this.inTls.client_certificate_path != undefined
+          || this.inTls.client_certificate != undefined
+          || this.inTls.client_certificate_public_key_sha256 != undefined
+          || this.outTls.client_certificate_path != undefined
+          || this.outTls.client_key_path != undefined
+          || this.outTls.client_certificate != undefined
+          || this.outTls.client_key != undefined
+      },
+      set(v: boolean) {
+        if (v) {
+          if (this.useClientPath == 0) {
+            if (this.inTls.client_certificate_path == undefined) this.inTls.client_certificate_path = []
+            if (this.outTls.client_certificate_path == undefined) this.outTls.client_certificate_path = ''
+            if (this.outTls.client_key_path == undefined) this.outTls.client_key_path = ''
+          }
+        } else {
+          this.inTls.client_authentication = undefined
+          this.inTls.client_certificate_path = undefined
+          this.inTls.client_certificate = undefined
+          this.outTls.client_certificate_path = undefined
+          this.outTls.client_key_path = undefined
+          this.outTls.client_certificate = undefined
+          this.outTls.client_key = undefined
+          this.inTls.client_certificate_public_key_sha256 = undefined
         }
       }
     },

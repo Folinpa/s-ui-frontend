@@ -2,6 +2,7 @@ import { iMultiplex } from "./multiplex"
 import { iTls } from "./tls"
 import { Dial } from "./dial"
 import { Transport } from "./transport"
+import RandomUtil from "@/plugins/randomUtil"
 
 export const InTypes = {
   Direct: 'direct',
@@ -236,7 +237,7 @@ const defaultValues: Record<InType, Inbound> = {
   socks: <SOCKS>{ type: InTypes.SOCKS },
   http: <HTTP>{ type: InTypes.HTTP, tls_id: 0 },
   shadowsocks: <Shadowsocks>{ type: InTypes.Shadowsocks, method: 'none' },
-  snell: <Snell>{ type: InTypes.Snell, version: 6, psk: '' },
+  snell: <Snell>{ type: InTypes.Snell, version: 6 },
   vmess: <VMess>{ type: InTypes.VMess, tls_id: 0, transport: {} },
   trojan: <Trojan>{ type: InTypes.Trojan, tls_id: 0, transport: {} },
   naive: <Naive>{ type: InTypes.Naive, tls_id: 0 },
@@ -262,7 +263,25 @@ const defaultValues: Record<InType, Inbound> = {
   cloudflared: <Cloudflared>{ type: InTypes.Cloudflared, token: '', protocol: 'auto' },
 }
 
+// Secrets sing-box requires on the inbound itself (as opposed to per-client
+// credentials, which the client system fills in). They are generated whenever
+// an inbound of that type is created so switching protocol never leaves an
+// inbound that cannot start.
+function generateSecrets(inbound: any) {
+  switch (inbound.type) {
+    case InTypes.Snell:
+      // sing-box requires a psk of 12-255 bytes.
+      if (!inbound.psk) inbound.psk = RandomUtil.randomSeq(32)
+      break
+    case InTypes.ShadowTLS:
+      // Only v2 carries an inbound-level password; v3 uses users.
+      if (inbound.version === 2 && !inbound.password) inbound.password = RandomUtil.randomSeq(16)
+      break
+  }
+}
+
 export function createInbound<T extends Inbound>(type: InType,json?: Partial<T>): Inbound {
   const defaultObject: Inbound = { ...defaultValues[type] ?? {}, ...(json ?? {}) }
+  generateSecrets(defaultObject)
   return defaultObject
 }
