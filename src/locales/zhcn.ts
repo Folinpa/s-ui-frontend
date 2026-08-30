@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "允许专用网络",
       dashboard: "仪表板",
       dashboardPath: "仪表板路径",
+      dashboardDownload: "下载仪表板",
+      dashboardUrl: "仪表板下载地址",
     },
     oomKiller: {
       memoryLimit: "内存上限",
@@ -607,6 +609,13 @@ export default {
     }
   },
   basic: {
+    httpClient: {
+      title: "HTTP 客户端",
+      none: "尚未定义 HTTP 客户端",
+      version: "HTTP 版本",
+      engine: "引擎",
+      noFallback: "禁用版本回退",
+    },
     log: {
       title: "日志",
       level: "级别",
@@ -632,6 +641,15 @@ export default {
       allowOrigin: "允许来源",
       allowPrivate: "允许私有网络",
     },
+  },
+  quic: {
+    idleTimeout: "空闲超时",
+    keepAlive: "保活周期",
+    maxStreams: "最大并发流",
+    streamWindow: "流接收窗口",
+    connectionWindow: "连接接收窗口",
+    initialPacketSize: "初始报文大小",
+    disableMtuDiscovery: "禁用路径 MTU 探测",
   },
   tls : {
     enable: "启用 TLS",

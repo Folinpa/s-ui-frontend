@@ -96,6 +96,19 @@
         </v-text-field>
       </v-col>
     </v-row>
+    <v-row v-if="optionHttpClient">
+      <v-col cols="12" sm="6" md="4">
+        <v-select
+          :label="$t('basic.httpClient.title')"
+          :items="httpClients"
+          :no-data-text="$t('basic.httpClient.none')"
+          hide-details
+          clearable
+          @click:clear="acme.http_client = undefined"
+          v-model="acme.http_client">
+        </v-select>
+      </v-col>
+    </v-row>
     <v-row v-if="acme.dns01_challenge != undefined">
       <v-col cols="12" sm="6" md="4">
         <v-select
@@ -148,6 +161,9 @@
             <v-list-item>
               <v-switch v-model="optionDns01" color="primary" :label="$t('tls.acme.dns01')" hide-details></v-switch>
             </v-list-item>
+            <v-list-item>
+              <v-switch v-model="optionHttpClient" color="primary" :label="$t('basic.httpClient.title')" hide-details></v-switch>
+            </v-list-item>
           </v-list>
         </v-card>
       </v-menu>
@@ -157,6 +173,7 @@
 
 <script lang="ts">
 import { acme } from '@/types/tls'
+import { httpClientTags } from '@/plugins/httpClient'
 
 // Edits one ACME entry of the config's certificate_providers list. The tag and
 // the type live in the modal around it, since every provider type carries them.
@@ -180,6 +197,15 @@ export default {
   computed: {
     acme(): acme {
       return <acme>this.$props.data
+    },
+    httpClients(): string[] {
+      return httpClientTags()
+    },
+    // Preselect a declared client so the option never leaves an empty
+    // reference behind; with none declared the select simply has nothing.
+    optionHttpClient: {
+      get(): boolean { return this.acme.http_client != undefined },
+      set(v: boolean) { this.acme.http_client = v ? this.httpClients[0] ?? '' : undefined }
     },
     domains: {
       get() { return this.acme.domain ? this.acme.domain.join(',') : "" },

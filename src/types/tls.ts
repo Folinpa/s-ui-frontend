@@ -68,6 +68,8 @@ export interface acme extends certProviderBasics {
     provider: string
     [key: string]: string
   }
+  // Tag of a shared client in the config's http_clients list.
+  http_client?: string
 }
 
 // Reads the certificate Tailscale issues for the node, so it carries no
@@ -85,6 +87,8 @@ export interface originCaProvider extends certProviderBasics {
   origin_ca_key?: string
   request_type?: 'origin-rsa' | 'origin-ecc'
   requested_validity?: number
+  // Tag of a shared client in the config's http_clients list.
+  http_client?: string
 }
 
 export type certProvider = acme | tailscaleProvider | originCaProvider

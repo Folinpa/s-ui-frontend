@@ -3,6 +3,7 @@ import { iTls } from "./tls"
 import { Dial } from "./dial"
 import { Transport } from "./transport"
 import RandomUtil from "@/plugins/randomUtil"
+import { QuicFields } from './httpClient'
 
 export const InTypes = {
   Direct: 'direct',
@@ -97,14 +98,13 @@ export interface Naive extends InboundBasics {
   tls: iTls,
   quic_congestion_control?: "" | "bbr" | "bbr2" | "cubic" | "reno"
 }
-export interface Hysteria extends InboundBasics {
+// The QUIC fields replace hysteria's own recv_window_conn, recv_window_client,
+// max_conn_client and disable_mtu_discovery, which sing-box still reads but has
+// deprecated.
+export interface Hysteria extends InboundBasics, QuicFields {
   up_mbps: number
   down_mbps: number
   obfs?: string
-  recv_window_conn?: number
-  recv_window_client?: number
-  max_conn_client?: number
-  disable_mtu_discovery?: boolean
 }
 export interface ShadowTLS extends InboundBasics {
   version: 1|2|3
@@ -126,13 +126,13 @@ export interface AnyTls extends InboundBasics {
   padding_scheme: string[]
   tls: iTls
 }
-export interface TUIC extends InboundBasics {
+export interface TUIC extends InboundBasics, QuicFields {
   congestion_control: ""|"cubic"|"new_reno"|"bbr"
   auth_timeout?: string
   zero_rtt_handshake?: boolean
   heartbeat?: string
 }
-export interface Hysteria2 extends InboundBasics {
+export interface Hysteria2 extends InboundBasics, QuicFields {
   up_mbps?: number
   down_mbps?: number
   obfs?: {

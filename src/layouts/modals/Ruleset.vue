@@ -39,6 +39,18 @@
           <v-col cols="12">
             <v-text-field v-model="rule_set.url" label="URL" hide-details></v-text-field>
           </v-col>
+          <!-- Download over a shared client, or over a single outbound. The
+               two are alternatives, so choosing one clears the other. -->
+          <v-col cols="12" sm="6" md="4">
+            <v-select
+              hide-details
+              :label="$t('basic.httpClient.title')"
+              :items="httpClients"
+              :no-data-text="$t('basic.httpClient.none')"
+              clearable
+              v-model="http_client">
+            </v-select>
+          </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select
               hide-details
@@ -79,7 +91,7 @@
 import RandomUtil from '@/plugins/randomUtil'
 import { ruleset } from '@/types/rules'
 import DocLink from '@/components/DocLink.vue'
-import { downloadHttpClient } from '@/plugins/httpClient'
+import { downloadHttpClient, httpClientTags, refDetour, refTag } from '@/plugins/httpClient'
 export default {
   components: { DocLink },
   props: ['visible', 'data', 'index', 'outTags'],
@@ -121,10 +133,22 @@ export default {
     }
   },
   computed: {
-    // The select edits http_client.detour; an empty choice drops http_client
-    // entirely so a local rule-set never carries an empty transport.
+    httpClients(): string[] {
+      return httpClientTags()
+    },
+    // Naming a shared client replaces any inline options, since http_client
+    // holds one or the other.
+    http_client: {
+      get() { return refTag(this.rule_set.http_client) },
+      set(v: string | undefined) {
+        if (v) this.rule_set.http_client = v
+        else delete this.rule_set.http_client
+      }
+    },
+    // The inline form, carrying just the outbound to download over. An empty
+    // choice drops http_client entirely rather than leaving an empty transport.
     download_detour: {
-      get() { return this.rule_set.http_client?.detour },
+      get() { return refDetour(this.rule_set.http_client) },
       set(v: string | undefined) {
         const httpClient = v ? downloadHttpClient(v) : undefined
         if (httpClient) this.rule_set.http_client = httpClient

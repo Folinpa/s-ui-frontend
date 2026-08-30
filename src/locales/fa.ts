@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "اجازه شبکه خصوصی",
       dashboard: "داشبورد",
       dashboardPath: "مسیر داشبورد",
+      dashboardDownload: "دانلود داشبورد",
+      dashboardUrl: "نشانی دانلود داشبورد",
     },
     oomKiller: {
       memoryLimit: "محدودیت حافظه",
@@ -607,6 +609,13 @@ export default {
     },
   },
   basic: {
+    httpClient: {
+      title: "کلاینت HTTP",
+      none: "هیچ کلاینت HTTP تعریف نشده",
+      version: "نسخه HTTP",
+      engine: "موتور",
+      noFallback: "غیرفعال کردن بازگشت به نسخه پایین‌تر",
+    },
     log: {
       title: "گزارش‌ها",
       level: "سطح",
@@ -632,6 +641,15 @@ export default {
       allowOrigin: "اجازه از مبدا",
       allowPrivate: "اجازه شبکه خصوصی",
     },
+  },
+  quic: {
+    idleTimeout: "مهلت بی‌کاری",
+    keepAlive: "دوره Keep Alive",
+    maxStreams: "بیشینه جریان‌های هم‌زمان",
+    streamWindow: "پنجره دریافت جریان",
+    connectionWindow: "پنجره دریافت اتصال",
+    initialPacketSize: "اندازه بسته اولیه",
+    disableMtuDiscovery: "غیرفعال کردن کشف MTU مسیر",
   },
   tls: {
     clientCa: "گواهی‌های CA کلاینت",

@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "允許專用網路",
       dashboard: "儀表板",
       dashboardPath: "儀表板路徑",
+      dashboardDownload: "下載儀表板",
+      dashboardUrl: "儀表板下載網址",
     },
     oomKiller: {
       memoryLimit: "記憶體上限",
@@ -607,6 +609,13 @@ export default {
     },
   },
   basic: {
+    httpClient: {
+      title: "HTTP 用戶端",
+      none: "尚未定義 HTTP 用戶端",
+      version: "HTTP 版本",
+      engine: "引擎",
+      noFallback: "停用版本回退",
+    },
     log: {
       title: "日誌",
       level: "級別",
@@ -632,6 +641,15 @@ export default {
       allowOrigin: "允許來源",
       allowPrivate: "允許私人網路",
     },
+  },
+  quic: {
+    idleTimeout: "閒置逾時",
+    keepAlive: "保活週期",
+    maxStreams: "最大並行串流",
+    streamWindow: "串流接收視窗",
+    connectionWindow: "連線接收視窗",
+    initialPacketSize: "初始封包大小",
+    disableMtuDiscovery: "停用路徑 MTU 探測",
   },
   tls : {
     enable: "啟用 TLS",

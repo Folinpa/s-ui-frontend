@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "Разрешить частную сеть",
       dashboard: "Панель",
       dashboardPath: "Путь панели",
+      dashboardDownload: "Загрузка панели",
+      dashboardUrl: "URL загрузки панели",
     },
     oomKiller: {
       memoryLimit: "Лимит памяти",
@@ -607,6 +609,13 @@ export default {
     }
   },
   basic: {
+    httpClient: {
+      title: "HTTP-клиент",
+      none: "HTTP-клиент не задан",
+      version: "Версия HTTP",
+      engine: "Движок",
+      noFallback: "Отключить откат версии",
+    },
     log: {
       title: "Журналы",
       level: "Уровень",
@@ -632,6 +641,15 @@ export default {
       allowOrigin: "Разрешить источник",
       allowPrivate: "Разрешить частную сеть"
     },
+  },
+  quic: {
+    idleTimeout: "Таймаут простоя",
+    keepAlive: "Период Keep Alive",
+    maxStreams: "Макс. одновременных потоков",
+    streamWindow: "Окно приёма потока",
+    connectionWindow: "Окно приёма соединения",
+    initialPacketSize: "Начальный размер пакета",
+    disableMtuDiscovery: "Отключить обнаружение MTU",
   },
   tls: {
     clientCa: "CA-сертификаты клиента",

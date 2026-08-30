@@ -46,13 +46,14 @@
           <v-switch v-model="inData.out_json.authenticated_length" color="primary" :label="$t('types.vmess.authLen')" hide-details></v-switch>
         </v-col>
       </template>
+      <!-- The QUIC stream window; recv_window was hysteria's own name for it. -->
       <v-col cols="12" sm="6" md="4" v-if="type == inTypes.Hysteria">
         <v-text-field
-        label="Recv window"
+        :label="$t('quic.streamWindow')"
+        placeholder="8mb"
         hide-details
-        type="number"
-        min="0"
-        v-model.number="inData.out_json.recv_window">
+        clearable
+        v-model="hysteriaStreamWindow">
         </v-text-field>
       </v-col>
       <template v-if="type == inTypes.TUIC">
@@ -132,6 +133,16 @@ export default {
     }
   },
   computed: {
+    // Takes a number or a string with a unit ("8mb"); an empty value is
+    // removed, since sing-box rejects "" for a byte size.
+    hysteriaStreamWindow: {
+      get(): string { return String(this.$props.inData.out_json.stream_receive_window ?? '') },
+      set(v: string) {
+        const trimmed = (v ?? '').trim()
+        if (trimmed) this.$props.inData.out_json.stream_receive_window = trimmed
+        else delete this.$props.inData.out_json.stream_receive_window
+      }
+    },
     needNetwork():boolean { return this.haveNetwork.includes(this.$props.type) },
     needUot():boolean { return this.havUoT.includes(this.$props.type) },
     packet_encoding: {

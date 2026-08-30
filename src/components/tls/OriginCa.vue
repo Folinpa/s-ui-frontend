@@ -63,10 +63,25 @@
         </v-text-field>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" sm="6" md="4">
+        <v-select
+          :label="$t('basic.httpClient.title')"
+          :items="httpClients"
+          :no-data-text="$t('basic.httpClient.none')"
+          hide-details
+          clearable
+          @click:clear="delete data.http_client"
+          v-model="data.http_client">
+        </v-select>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
 <script lang="ts">
+import { httpClientTags } from '@/plugins/httpClient'
+
 export default {
   props: ['data'],
   data() {
@@ -80,6 +95,9 @@ export default {
     }
   },
   computed: {
+    httpClients(): string[] {
+      return httpClientTags()
+    },
     domains: {
       get(): string { return this.$props.data.domain ? this.$props.data.domain.join(',') : '' },
       set(v: string) {

@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "Allow Private Network",
       dashboard: "Dashboard",
       dashboardPath: "Dashboard Path",
+      dashboardDownload: "Download Dashboard",
+      dashboardUrl: "Dashboard Download URL",
     },
     oomKiller: {
       memoryLimit: "Memory Limit",
@@ -609,6 +611,13 @@ export default {
     }
   },
   basic: {
+    httpClient: {
+      title: "HTTP Client",
+      none: "No HTTP client defined",
+      version: "HTTP Version",
+      engine: "Engine",
+      noFallback: "Disable Version Fallback",
+    },
     log: {
       title: "Logs",
       level: "Level",
@@ -634,6 +643,15 @@ export default {
       allowOrigin: "Allow Origin",
       allowPrivate: "Allow Private Network",
     },
+  },
+  quic: {
+    idleTimeout: "Idle Timeout",
+    keepAlive: "Keep Alive Period",
+    maxStreams: "Max Concurrent Streams",
+    streamWindow: "Stream Receive Window",
+    connectionWindow: "Connection Receive Window",
+    initialPacketSize: "Initial Packet Size",
+    disableMtuDiscovery: "Disable Path MTU Discovery",
   },
   tls: {
     clientCa: "Client CA Certificates",

@@ -295,6 +295,8 @@ export default {
       allowPrivateNetwork: "Cho phép mạng riêng",
       dashboard: "Bảng điều khiển",
       dashboardPath: "Đường dẫn bảng điều khiển",
+      dashboardDownload: "Tải bảng điều khiển",
+      dashboardUrl: "URL tải bảng điều khiển",
     },
     oomKiller: {
       memoryLimit: "Giới hạn bộ nhớ",
@@ -607,6 +609,13 @@ export default {
     }
   },
   basic: {
+    httpClient: {
+      title: "HTTP Client",
+      none: "Chưa có HTTP client nào",
+      version: "Phiên bản HTTP",
+      engine: "Engine",
+      noFallback: "Tắt dự phòng phiên bản",
+    },
     log: {
       title: "Nhật ký",
       level: "Mức độ",
@@ -632,6 +641,15 @@ export default {
       allowOrigin: "Cho phép nguồn gốc",
       allowPrivate: "Cho phép mạng riêng",
     },
+  },
+  quic: {
+    idleTimeout: "Thời gian chờ nhàn rỗi",
+    keepAlive: "Chu kỳ Keep Alive",
+    maxStreams: "Số luồng đồng thời tối đa",
+    streamWindow: "Cửa sổ nhận luồng",
+    connectionWindow: "Cửa sổ nhận kết nối",
+    initialPacketSize: "Kích thước gói ban đầu",
+    disableMtuDiscovery: "Tắt dò tìm MTU đường truyền",
   },
   tls : {
     enable: "Kích hoạt TLS",
