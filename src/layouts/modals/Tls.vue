@@ -76,7 +76,23 @@
             </template>
           </v-row>
           <template v-if="tlsType == 0">
+            <!-- A certificate provider issues the certificate itself, so
+                 sing-box ignores any certificate given by hand once one is
+                 chosen. Providers are defined on the TLS page. -->
             <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  hide-details
+                  :label="$t('tls.provider.title')"
+                  :items="providerTags"
+                  :no-data-text="$t('tls.provider.none')"
+                  clearable
+                  @click:clear="inTls.certificate_provider = undefined"
+                  v-model="inTls.certificate_provider">
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-row v-if="inTls.certificate_provider == undefined">
               <v-col>
                 <v-btn-toggle v-model="usePath"
                 class="rounded-xl"
@@ -107,7 +123,7 @@
                 </v-btn>
               </v-col>
             </v-row>
-            <v-row v-if="usePath == 0">
+            <v-row v-if="inTls.certificate_provider == undefined && usePath == 0">
               <v-col cols="12" sm="6">
                 <v-text-field
                   :label="$t('tls.certPath')"
@@ -123,7 +139,7 @@
                 </v-text-field>
               </v-col>
             </v-row>
-            <v-row v-else>
+            <v-row v-else-if="inTls.certificate_provider == undefined">
               <v-col cols="12">
                 <v-textarea
                   :label="$t('tls.cert')"
@@ -403,7 +419,6 @@
             </v-menu>
           </v-card-actions>
         </v-card>
-        <AcmeVue :tls="inTls" v-if="!isWindows" />
         <EchVue :iTls="inTls" :oTls="outTls" />
       </v-card-text>
       <v-card-actions>
@@ -430,16 +445,14 @@
 
 <script lang="ts">
 import { tls, iTls, defaultInTls, oTls, defaultOutTls } from '@/types/tls'
-import AcmeVue from '@/components/tls/Acme.vue'
 import DocLink from '@/components/DocLink.vue'
 import EchVue from '@/components/tls/Ech.vue'
 import HttpUtils from '@/plugins/httputil'
 import { push } from 'notivue'
 import { i18n } from '@/locales'
 import RandomUtil from '@/plugins/randomUtil'
-import Data from '@/store/modules/data'
 export default {
-  props: ['visible', 'data', 'id'],
+  props: ['visible', 'data', 'id', 'providers'],
   emits: ['close', 'save'],
   data() {
     return {
@@ -629,8 +642,8 @@ export default {
     }
   },
   computed: {
-    isWindows(): boolean {
-      return Data().os === 'windows'
+    providerTags(): string[] {
+      return <string[]>(this.$props.providers ?? [])
     },
     inTls(): iTls {
       return this.tls.server
@@ -779,6 +792,6 @@ export default {
       }
     },
   },
-  components: { DocLink, AcmeVue, EchVue }
+  components: { DocLink, EchVue }
 }
 </script>

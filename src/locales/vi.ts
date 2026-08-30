@@ -657,6 +657,16 @@ export default {
     kernelTx: "TX",
     kernelRx: "RX",
     queryServerName: "Tên máy chủ truy vấn ECH",
+    provider: {
+      title: "Nhà cung cấp chứng chỉ",
+      none: "Chưa có nhà cung cấp chứng chỉ nào",
+      endpoint: "Điểm điều khiển",
+      endpointHint: "Để trống để dùng điểm Tailscale của máy này",
+      apiToken: "API Token",
+      originCaKey: "Khóa Origin CA",
+      requestType: "Loại yêu cầu",
+      validity: "Thời hạn yêu cầu (ngày)",
+    },
     acme: {
       options: "Tùy chọn ACME",
       dataDir: "Thư mục Dữ liệu",

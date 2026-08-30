@@ -667,6 +667,16 @@ export default {
     kernelTx: "TX",
     kernelRx: "RX",
     queryServerName: "ECH имя сервера для запроса",
+    provider: {
+      title: "Поставщик сертификатов",
+      none: "Поставщик сертификатов не задан",
+      endpoint: "Контрольная точка",
+      endpointHint: "Оставьте пустым, чтобы использовать точку Tailscale этого узла",
+      apiToken: "API-токен",
+      originCaKey: "Ключ Origin CA",
+      requestType: "Тип запроса",
+      validity: "Запрошенный срок действия (дней)",
+    },
     acme: {
       options: "Параметры ACME",
       dataDir: "Каталог данных",

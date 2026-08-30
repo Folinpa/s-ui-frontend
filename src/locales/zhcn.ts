@@ -657,6 +657,16 @@ export default {
     kernelTx: "发送",
     kernelRx: "接收",
     queryServerName: "ECH 查询服务器名称",
+    provider: {
+      title: "证书提供者",
+      none: "尚未定义证书提供者",
+      endpoint: "控制端点",
+      endpointHint: "留空则使用本节点的 Tailscale 端点",
+      apiToken: "API 令牌",
+      originCaKey: "Origin CA 密钥",
+      requestType: "请求类型",
+      validity: "请求有效期（天）",
+    },
     acme: {
       options: "ACME 选项",
       dataDir: "数据目录",

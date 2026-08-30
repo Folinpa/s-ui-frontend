@@ -667,6 +667,16 @@ export default {
     kernelTx: "ارسال",
     kernelRx: "دریافت",
     queryServerName: "نام سرور ECH برای جستجو",
+    provider: {
+      title: "صادرکننده گواهی",
+      none: "هیچ صادرکننده‌ای تعریف نشده",
+      endpoint: "نقطه کنترل",
+      endpointHint: "خالی بگذارید تا از نقطه Tailscale همین سرور استفاده شود",
+      apiToken: "توکن API",
+      originCaKey: "کلید Origin CA",
+      requestType: "نوع درخواست",
+      validity: "مدت اعتبار درخواستی (روز)",
+    },
     acme: {
       options: "گزینه‌های ACME",
       dataDir: "مسیر داده‌ها",

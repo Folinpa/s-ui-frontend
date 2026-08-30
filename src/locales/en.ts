@@ -669,6 +669,16 @@ export default {
     kernelTx: "TX",
     kernelRx: "RX",
     queryServerName: "ECH Query Server Name",
+    provider: {
+      title: "Certificate Provider",
+      none: "No certificate provider defined",
+      endpoint: "Control Endpoint",
+      endpointHint: "Leave empty to use the Tailscale endpoint of this node",
+      apiToken: "API Token",
+      originCaKey: "Origin CA Key",
+      requestType: "Request Type",
+      validity: "Requested Validity (days)",
+    },
     acme: {
       options: "ACME Options",
       dataDir: "Data Directory",
