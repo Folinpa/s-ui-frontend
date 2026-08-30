@@ -90,6 +90,13 @@
             @click:clear="delete route.final" :items="outboundTags" v-model="route.final"></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="3" lg="2">
+          <!-- Which DNS server resolves the domains outbounds dial. sing-box
+               guesses when several servers exist and none is named. -->
+          <v-select hide-details :label="$t('basic.routing.defaultDns')" clearable
+            @click:clear="delete route.default_domain_resolver" :items="dnsTags"
+            v-model="route.default_domain_resolver"></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" lg="2">
           <v-text-field v-model="route.default_interface" hide-details clearable
             @click:clear="delete route.default_interface" :label="$t('basic.routing.defaultIf')"></v-text-field>
         </v-col>
@@ -237,6 +244,9 @@ const rulesets = computed((): any[] => {
 })
 
 const rulesetTags = computed((): string[] => rulesets.value.map((rs:any) => rs.tag))
+
+const dnsTags = computed((): string[] =>
+  (appConfig.value.dns?.servers ?? []).map((s:any) => s.tag).filter((t:string) => t?.length > 0))
 
 const outboundTags = computed((): string[] => [
   ...Data().outbounds?.map((o:any) => o.tag),

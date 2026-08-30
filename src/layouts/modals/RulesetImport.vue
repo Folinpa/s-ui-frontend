@@ -111,6 +111,7 @@
 </template>
 
 <script lang="ts">
+import { downloadHttpClient } from '@/plugins/httpClient'
 interface ImportItem { tag: string; url: string; format: string; exists: boolean }
 
 export default {
@@ -162,7 +163,8 @@ export default {
     save() {
       const toAdd = this.importPreview.filter(i => !i.exists).map(item => {
         const rs: any = { type: 'remote', tag: item.tag, format: item.format, url: item.url }
-        if (this.importDetour) rs.http_client = { detour: this.importDetour, disable_empty_direct_check: true }
+        const httpClient = downloadHttpClient(this.importDetour)
+        if (httpClient) rs.http_client = httpClient
         if (this.importInterval > 0) rs.update_interval = this.importInterval + 'd'
         return rs
       })

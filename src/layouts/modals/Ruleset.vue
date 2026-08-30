@@ -79,6 +79,7 @@
 import RandomUtil from '@/plugins/randomUtil'
 import { ruleset } from '@/types/rules'
 import DocLink from '@/components/DocLink.vue'
+import { downloadHttpClient } from '@/plugins/httpClient'
 export default {
   components: { DocLink },
   props: ['visible', 'data', 'index', 'outTags'],
@@ -125,7 +126,8 @@ export default {
     download_detour: {
       get() { return this.rule_set.http_client?.detour },
       set(v: string | undefined) {
-        if (v) this.rule_set.http_client = { detour: v, disable_empty_direct_check: true }
+        const httpClient = v ? downloadHttpClient(v) : undefined
+        if (httpClient) this.rule_set.http_client = httpClient
         else delete this.rule_set.http_client
       }
     },
