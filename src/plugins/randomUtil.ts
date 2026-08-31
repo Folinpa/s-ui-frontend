@@ -18,8 +18,9 @@ const RandomUtil = {
     const random = (highbits * 2 ** 21 + lowbits) / (Number.MAX_SAFE_INTEGER + 1)
     return Math.floor(random * (max - min + 1) + min)
   },
+  // returns an integer in [0, n)
   randomInt(n: number) {
-    return this.randomIntRange(0, n)
+    return this.randomIntRange(0, n - 1)
   },
   randomSeq(count: number): string {
     if (count <= 0) {
@@ -27,7 +28,7 @@ const RandomUtil = {
     }
     let str = ''
     for (let i = 0; i < count; ++i) {
-        str += seq[this.randomInt(62)]
+        str += seq[this.randomInt(seq.length)]
     }
     return str
   },
@@ -63,7 +64,7 @@ const RandomUtil = {
   randomShortId(): string[] {
     let shortIds = new Array(24).fill('')
     for (var ii = 1; ii < 24; ii++) {
-      for (var jj = 0; jj <= this.randomInt(7); jj++){
+      for (var jj = 0; jj <= this.randomInt(8); jj++){
           let randomNum = this.randomInt(256)
           shortIds[ii] += ('0' + randomNum.toString(16)).slice(-2)
       }
