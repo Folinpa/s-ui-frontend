@@ -39,14 +39,25 @@
           <v-col cols="12">
             <v-text-field v-model="rule_set.url" label="URL" hide-details></v-text-field>
           </v-col>
+          <!-- Download over a shared client, or over a single outbound. The
+               two are alternatives, so choosing one clears the other. -->
+          <v-col cols="12" sm="6" md="4">
+            <v-select
+              hide-details
+              :label="$t('basic.httpClient.title')"
+              :items="httpClients"
+              :no-data-text="$t('basic.httpClient.none')"
+              clearable
+              v-model="http_client">
+            </v-select>
+          </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select
               hide-details
               :label="$t('objects.outbound')"
               :items="outTags"
               clearable
-              @click:clear="delete rule_set.download_detour"
-              v-model="rule_set.download_detour">
+              v-model="download_detour">
             </v-select>
           </v-col>
           <v-col cols="12" sm="6" md="4">
@@ -80,6 +91,7 @@
 import RandomUtil from '@/plugins/randomUtil'
 import { ruleset } from '@/types/rules'
 import DocLink from '@/components/DocLink.vue'
+import { downloadHttpClient, httpClientTags, refDetour, refTag } from '@/plugins/httpClient'
 export default {
   components: { DocLink },
   props: ['visible', 'data', 'index', 'outTags'],
@@ -105,7 +117,7 @@ export default {
     updateType(t:string) {
       if (t == 'local') {
         delete this.rule_set.url
-        delete this.rule_set.download_detour
+        delete this.rule_set.http_client
         delete this.rule_set.update_interval
       } else {
         delete this.rule_set.path
@@ -121,6 +133,28 @@ export default {
     }
   },
   computed: {
+    httpClients(): string[] {
+      return httpClientTags()
+    },
+    // Naming a shared client replaces any inline options, since http_client
+    // holds one or the other.
+    http_client: {
+      get() { return refTag(this.rule_set.http_client) },
+      set(v: string | undefined) {
+        if (v) this.rule_set.http_client = v
+        else delete this.rule_set.http_client
+      }
+    },
+    // The inline form, carrying just the outbound to download over. An empty
+    // choice drops http_client entirely rather than leaving an empty transport.
+    download_detour: {
+      get() { return refDetour(this.rule_set.http_client) },
+      set(v: string | undefined) {
+        const httpClient = v ? downloadHttpClient(v) : undefined
+        if (httpClient) this.rule_set.http_client = httpClient
+        else delete this.rule_set.http_client
+      }
+    },
     update_intervals: {
       get() { return this.rule_set.update_interval != undefined ? parseInt(this.rule_set.update_interval.replace('d','')) : 0 },
       set(v:number) { this.rule_set.update_interval = v>0 ?  v + 'd' : undefined }

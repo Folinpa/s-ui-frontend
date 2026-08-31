@@ -59,10 +59,12 @@
         </v-text-field>
       </v-col>
     </v-row>
+    <QuicFields :data="data" quic />
   </v-card>
 </template>
 
 <script lang="ts">
+import QuicFields from '@/components/QuicFields.vue'
 import Network from '@/components/Network.vue'
 
 export default {
@@ -84,6 +86,6 @@ export default {
       set(newValue:number) { this.$props.data.heartbeat = newValue ? newValue + 's' : '' }
     }
   },
-  components: { Network }
+  components: { Network, QuicFields }
 }
 </script>

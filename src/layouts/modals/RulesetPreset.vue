@@ -90,6 +90,7 @@
 </template>
 
 <script lang="ts">
+import { downloadHttpClient } from '@/plugins/httpClient'
 import { geoCatalog, geoList } from '@/plugins/rulesetCatalog'
 
 export default {
@@ -124,7 +125,8 @@ export default {
     save() {
       const toAdd = this.preview.filter((i: any) => !i.exists).map((item: any) => {
         const rs: any = { type: 'remote', tag: item.tag, format: item.format, url: item.url }
-        if (this.detour) rs.download_detour = this.detour
+        const httpClient = downloadHttpClient(this.detour)
+        if (httpClient) rs.http_client = httpClient
         if (this.interval > 0) rs.update_interval = this.interval + 'd'
         return rs
       })

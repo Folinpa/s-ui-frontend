@@ -6,6 +6,15 @@
       </v-btn>
     </v-col>
   </v-row>
+  <HttpClientVue
+    v-model="httpClientModal.visible"
+    :visible="httpClientModal.visible"
+    :index="httpClientModal.index"
+    :data="httpClientModal.data"
+    :tags="httpClientTags"
+    @close="httpClientModal.visible = false"
+    @save="saveHttpClient"
+  />
   <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-title>
@@ -81,6 +90,50 @@
           </v-col>
         </v-row>
         <Dial :dial="appConfig.ntp" v-if="appConfig.ntp?.enabled" />
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+    <v-expansion-panel>
+      <v-expansion-panel-title>
+        {{ $t('basic.httpClient.title') }}
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <!-- Shared transports for everything sing-box downloads: remote
+             rule-sets, the API dashboard, certificate providers. Each is
+             referenced by its tag. -->
+        <v-row>
+          <v-col cols="12">
+            <v-btn color="primary" variant="tonal" @click="showHttpClientModal(-1)">{{ $t('actions.add') }}</v-btn>
+          </v-col>
+        </v-row>
+        <v-data-table
+          :headers="httpClientHeaders"
+          :items="httpClients"
+          :no-data-text="$t('basic.httpClient.none')"
+          item-value="tag"
+          density="compact"
+          hide-default-footer
+          items-per-page="-1"
+        >
+          <template v-slot:item.version="{ value }">
+            {{ versionName(value) }}
+          </template>
+          <template v-slot:item.detour="{ value }">
+            {{ value ?? '-' }}
+          </template>
+          <template v-slot:item.engine="{ value }">
+            {{ value ?? '-' }}
+          </template>
+          <template v-slot:item.actions="{ index }">
+            <v-btn icon="mdi-file-edit" variant="text" density="compact" @click="showHttpClientModal(index)">
+              <v-icon />
+              <v-tooltip activator="parent" location="top" :text="$t('actions.edit')"></v-tooltip>
+            </v-btn>
+            <v-btn icon="mdi-file-remove" variant="text" density="compact" color="warning" @click="delHttpClient(index)">
+              <v-icon />
+              <v-tooltip activator="parent" location="top" :text="$t('actions.del')"></v-tooltip>
+            </v-btn>
+          </template>
+        </v-data-table>
       </v-expansion-panel-text>
     </v-expansion-panel>
     <v-expansion-panel>
@@ -247,10 +300,13 @@
 <script lang="ts" setup>
 import Data from '@/store/modules/data'
 import Dial from '@/components/Dial.vue'
+import HttpClientVue from '@/layouts/modals/HttpClient.vue'
 import DocLink from '@/components/DocLink.vue'
 import { computed, ref, onBeforeMount } from 'vue'
 import { Config, Ntp } from '@/types/config'
+import { HttpClient } from '@/types/httpClient'
 import { FindDiff } from '@/plugins/utils'
+import { i18n } from '@/locales'
 import { LOG_DOC, NTP_DOC, EXPERIMENTAL_DOC, CACHE_FILE_DOC, CLASH_API_DOC, V2RAY_API_DOC } from '@/plugins/docs'
 
 const oldConfig = ref({})
@@ -296,6 +352,42 @@ const outboundTags = computed((): string[] => {
 })
 
 const levels = ["trace", "debug", "info", "warn", "error", "fatal", "panic"]
+
+// Shared HTTP clients live at the top level of the config, beside log and dns.
+const httpClients = computed((): HttpClient[] => {
+  const config = <any>appConfig.value
+  if (!Array.isArray(config.http_clients)) config.http_clients = []
+  return config.http_clients
+})
+
+const httpClientTags = computed((): string[] => httpClients.value.map(c => c.tag))
+
+const versionNames: Record<string, string> = { 0: 'Auto', 1: 'HTTP/1.1', 2: 'HTTP/2', 3: 'HTTP/3' }
+const versionName = (version?: number): string => versionNames[version ?? 0] ?? 'Auto'
+
+const httpClientHeaders = computed(() => [
+  { title: i18n.global.t('objects.tag'), key: 'tag' },
+  { title: i18n.global.t('basic.httpClient.version'), key: 'version' },
+  { title: i18n.global.t('basic.httpClient.engine'), key: 'engine' },
+  { title: i18n.global.t('listen.detour'), key: 'detour' },
+  { title: '', key: 'actions', sortable: false, align: 'end' as const},
+])
+
+const httpClientModal = ref({ visible: false, index: -1, data: "" })
+
+const showHttpClientModal = (index: number) => {
+  httpClientModal.value.index = index
+  httpClientModal.value.data = index == -1 ? '' : JSON.stringify(httpClients.value[index])
+  httpClientModal.value.visible = true
+}
+
+const saveHttpClient = (data: HttpClient) => {
+  if (httpClientModal.value.index == -1) httpClients.value.push(data)
+  else httpClients.value[httpClientModal.value.index] = data
+  httpClientModal.value.visible = false
+}
+
+const delHttpClient = (index: number) => { httpClients.value.splice(index, 1) }
 
 const enableNtp = computed({
   get() { return appConfig.value.ntp?.enabled?? false },

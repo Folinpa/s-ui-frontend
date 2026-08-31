@@ -90,11 +90,25 @@
             @click:clear="delete route.final" :items="outboundTags" v-model="route.final"></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="3" lg="2">
+          <!-- Which DNS server resolves the domains outbounds dial. sing-box
+               guesses when several servers exist and none is named. -->
+          <v-select hide-details :label="$t('basic.routing.defaultDns')" clearable
+            @click:clear="delete route.default_domain_resolver" :items="dnsTags"
+            v-model="route.default_domain_resolver"></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" lg="2">
           <v-text-field v-model="route.default_interface" hide-details clearable
             @click:clear="delete route.default_interface" :label="$t('basic.routing.defaultIf')"></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="3" lg="2">
           <v-text-field v-model.number="routeMark" hide-details type="number" min="0" :label="$t('basic.routing.defaultRm')"></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" lg="2">
+          <!-- Which shared client downloads the rule-sets that name none. -->
+          <v-select hide-details :label="$t('basic.httpClient.title')" clearable
+            @click:clear="delete route.default_http_client" :items="httpClients"
+            :no-data-text="$t('basic.httpClient.none')"
+            v-model="route.default_http_client"></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="3" lg="2">
           <v-switch v-model="route.auto_detect_interface" color="primary" :label="$t('basic.routing.autoBind')" hide-details></v-switch>
@@ -111,7 +125,7 @@
         </v-card-subtitle>
         <v-card-text>
           <v-row><v-col>{{ $t('ruleset.format') }}</v-col><v-col>{{ item.format }}</v-col></v-row>
-          <v-row><v-col>{{ $t('objects.outbound') }}</v-col><v-col>{{ item.download_detour ?? '-' }}</v-col></v-row>
+          <v-row><v-col>{{ $t('objects.outbound') }}</v-col><v-col>{{ item.http_client?.detour ?? '-' }}</v-col></v-row>
           <v-row><v-col>{{ $t('actions.update') }}</v-col><v-col>{{ item.update_interval ?? '-' }}</v-col></v-row>
         </v-card-text>
         <v-divider></v-divider>
@@ -177,6 +191,7 @@
 
 <script lang="ts" setup>
 import Data from '@/store/modules/data'
+import { httpClientTags } from '@/plugins/httpClient'
 import { computed, ref, onBeforeMount } from 'vue'
 import RuleVue from '@/layouts/modals/Rule.vue'
 import RulesetVue from '@/layouts/modals/Ruleset.vue'
@@ -237,6 +252,11 @@ const rulesets = computed((): any[] => {
 })
 
 const rulesetTags = computed((): string[] => rulesets.value.map((rs:any) => rs.tag))
+
+const httpClients = computed((): string[] => httpClientTags())
+
+const dnsTags = computed((): string[] =>
+  (appConfig.value.dns?.servers ?? []).map((s:any) => s.tag).filter((t:string) => t?.length > 0))
 
 const outboundTags = computed((): string[] => [
   ...Data().outbounds?.map((o:any) => o.tag),

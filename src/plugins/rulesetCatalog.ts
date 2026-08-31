@@ -1,9 +1,11 @@
+// No http_client: these download over the default outbound, which is what a
+// detour to a plain direct outbound would have done anyway. sing-box rejects
+// such a detour as pointless.
 export interface CatalogRuleset {
   tag: string
   type: 'remote'
   format: 'binary'
   url: string
-  download_detour: string
 }
 
 const srs = (kind: 'geosite' | 'geoip', name: string): string =>
@@ -14,7 +16,6 @@ const entry = (tag: string, url: string): CatalogRuleset => ({
   type: 'remote',
   format: 'binary',
   url,
-  download_detour: 'direct',
 })
 
 export const geoCatalog: CatalogRuleset[] = [

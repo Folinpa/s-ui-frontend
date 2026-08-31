@@ -41,9 +41,11 @@
           </v-tabs>
           <v-window v-model="side" style="margin-top: 10px;">
             <v-window-item value="s">
-              <Listen :data="inbound" :inTags="inTags" v-if="inbound.type != inTypes.Tun" />
+              <Listen :data="inbound" :inTags="inTags" v-if="!NoListen.includes(inbound.type)" />
               <Direct v-if="inbound.type == inTypes.Direct" :data="inbound" />
               <Shadowsocks v-if="inbound.type == inTypes.Shadowsocks" direction="in" :data="inbound" />
+              <Snell v-if="inbound.type == inTypes.Snell" direction="in" :data="inbound" />
+              <Cloudflared v-if="inbound.type == inTypes.Cloudflared" :data="inbound" />
               <Hysteria v-if="inbound.type == inTypes.Hysteria" direction="in" :data="inbound" />
               <Hysteria2 v-if="inbound.type == inTypes.Hysteria2" direction="in" :data="inbound" />
               <Naive v-if="inbound.type == inTypes.Naive" direction="in" :data="inbound" />
@@ -108,6 +110,8 @@ import Listen from '@/components/Listen.vue'
 import Direct from '@/components/protocols/Direct.vue'
 import Users from '@/components/Users.vue'
 import Shadowsocks from '@/components/protocols/Shadowsocks.vue'
+import Snell from '@/components/protocols/Snell.vue'
+import Cloudflared from '@/components/protocols/Cloudflared.vue'
 import Hysteria from '@/components/protocols/Hysteria.vue'
 import Hysteria2 from '@/components/protocols/Hysteria2.vue'
 import Naive from '@/components/protocols/Naive.vue'
@@ -170,6 +174,9 @@ export default {
         InTypes.Shadowsocks,
       ],
       OnlyTLS: [InTypes.Hysteria, InTypes.Hysteria2, InTypes.TUIC, InTypes.Naive, InTypes.AnyTls ],
+      // tun brings its own interface options; cloudflared dials out to the
+      // Cloudflare edge and sing-box rejects listen fields on it.
+      NoListen: [InTypes.Tun, InTypes.Cloudflared],
     }
   },
   methods: {
@@ -208,11 +215,17 @@ export default {
     },
     changeType() {
       if (!this.inbound.listen_port) this.inbound.listen_port = RandomUtil.randomIntRange(10000, 60000)
+      const noListen = this.NoListen.includes(this.inbound.type)
       // Tag change only in add inbound
-      const tag = this.$props.id > 0 ? this.inbound.tag : this.inbound.type + "-" + this.inbound.listen_port
-      // Use previous data
-      const prevConfig = { id: this.inbound.id, tag: tag, listen: this.inbound.listen?? "::", listen_port: this.inbound.listen_port }
-      this.inbound = createInbound(this.inbound.type, this.inbound.type != this.inTypes.Tun ? prevConfig : { tag: tag })
+      const tag = this.$props.id > 0
+        ? this.inbound.tag
+        : this.inbound.type + "-" + (noListen ? RandomUtil.randomSeq(3) : this.inbound.listen_port)
+      // Use previous data. Types that do not listen must not carry the listen
+      // settings over, sing-box rejects them as unknown fields.
+      const prevConfig = noListen
+        ? { id: this.inbound.id, tag: tag }
+        : { id: this.inbound.id, tag: tag, listen: this.inbound.listen?? "::", listen_port: this.inbound.listen_port }
+      this.inbound = createInbound(this.inbound.type, prevConfig)
       if (this.HasInData.includes(this.inbound.type)){
         this.inbound.addrs = []
         this.inbound.out_json = {}
@@ -285,7 +298,7 @@ export default {
     DocLink,
     Listen, InTls, Hysteria2, Naive, Direct, Shadowsocks,
     Users, Hysteria, ShadowTls, TProxy, Multiplex, Tuic, Tun,
-    AnyTls, Transport, AddrVue, OutJsonVue, Dial
+    AnyTls, Transport, AddrVue, OutJsonVue, Dial, Snell, Cloudflared
   }
 }
 </script>

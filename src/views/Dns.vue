@@ -72,9 +72,6 @@
           <v-checkbox v-model="dns.disable_expire" hide-details :label="$t('dns.disableExpire')" />
         </v-col>
         <v-col cols="auto">
-          <v-checkbox v-model="dns.independent_cache" hide-details :label="$t('dns.independentCache')" />
-        </v-col>
-        <v-col cols="auto">
           <v-checkbox v-model="dns.reverse_mapping" hide-details :label="$t('dns.reverseMapping')" />
         </v-col>
       </v-row>

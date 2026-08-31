@@ -41,9 +41,6 @@
       <v-col cols="12" sm="6" md="4" v-if="direction=='out'">
         <Network :data="data" />
       </v-col>
-      <v-col cols="12" sm="6" md="4">
-        <v-switch v-model="data.disable_mtu_discovery" color="primary" label="Disable MTU discovery" hide-details></v-switch>
-      </v-col>
     </v-row>
     <v-row v-if="direction=='out'">
       <v-col cols="12" sm="8" v-if="optionMPort">
@@ -62,44 +59,6 @@
         </v-text-field>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window_conn != undefined">
-        <v-text-field
-        label="Recv window conn"
-        hide-details
-        type="number"
-        min="0"
-        v-model.number="data.recv_window_conn">
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window != undefined">
-        <v-text-field
-        label="Recv window"
-        hide-details
-        type="number"
-        min="0"
-        v-model.number="data.recv_window">
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window_client != undefined">
-        <v-text-field
-        label="Recv window client"
-        hide-details
-        type="number"
-        min="0"
-        v-model.number="data.recv_window_client">
-        </v-text-field>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.max_conn_client != undefined">
-        <v-text-field
-        label="Max conn client"
-        hide-details
-        type="number"
-        min="0"
-        v-model.number="data.max_conn_client">
-        </v-text-field>
-      </v-col>
-    </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
@@ -108,18 +67,6 @@
         </template>
         <v-card>
           <v-list>
-            <v-list-item>
-              <v-switch v-model="optionRsvConn" color="primary" label="Recv window conn" hide-details></v-switch>
-            </v-list-item>
-            <v-list-item v-if="direction=='out'">
-              <v-switch v-model="optionRsvWin" color="primary" label="Recv window" hide-details></v-switch>
-            </v-list-item>
-            <v-list-item v-if="direction=='in'">
-              <v-switch v-model="optionRsvClnt" color="primary" label="Recv window client" hide-details></v-switch>
-            </v-list-item>
-            <v-list-item v-if="direction=='in'">
-              <v-switch v-model="optionMaxConn" color="primary" label="Max conn client" hide-details></v-switch>
-            </v-list-item>
             <v-list-item v-if="direction=='out'">
               <v-switch v-model="optionMPort" color="primary" :label="$t('rule.portRange')" hide-details></v-switch>
             </v-list-item>
@@ -127,10 +74,12 @@
         </v-card>
       </v-menu>
     </v-card-actions>
+    <QuicFields :data="data" quic />
   </v-card>
 </template>
 
 <script lang="ts">
+import QuicFields from '@/components/QuicFields.vue'
 import Network from '@/components/Network.vue'
 
 export default {
@@ -141,22 +90,6 @@ export default {
     }
   },
   computed: {
-    optionRsvConn: {
-      get(): boolean { return this.$props.data.recv_window_conn != undefined },
-      set(v:boolean) { this.$props.data.recv_window_conn = v ? 15728640 : undefined }
-    },
-    optionRsvWin: {
-      get(): boolean { return this.$props.data.recv_window != undefined },
-      set(v:boolean) { this.$props.data.recv_window = v ? 67108864 : undefined }
-    },
-    optionRsvClnt: {
-      get(): boolean { return this.$props.data.recv_window_client != undefined },
-      set(v:boolean) { this.$props.data.recv_window_client = v ? 67108864 : undefined }
-    },
-    optionMaxConn: {
-      get(): boolean { return this.$props.data.max_conn_client != undefined },
-      set(v:boolean) { this.$props.data.max_conn_client = v ? 1024 : undefined }
-    },
     optionMPort: {
       get(): boolean { return this.$props.data.server_ports != undefined },
       set(v:boolean) { this.$props.data.server_ports = v ? [] : undefined }
@@ -186,6 +119,6 @@ export default {
       set(newValue:number) { this.$props.data.up_mbps = newValue > 0 ? newValue : 0 }
     },
   },
-  components: { Network }
+  components: { Network, QuicFields }
 }
 </script>

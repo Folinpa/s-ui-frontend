@@ -153,10 +153,12 @@
         </v-card>
       </v-menu>
     </v-card-actions>
+    <QuicFields :data="data" quic />
   </v-card>
 </template>
 
 <script lang="ts">
+import QuicFields from '@/components/QuicFields.vue'
 import Network from '@/components/Network.vue'
 import Headers from '@/components/Headers.vue'
 import { i18n } from '@/locales'
@@ -214,6 +216,6 @@ export default {
       set(v:boolean) { this.$props.data.server_ports = v ? [] : undefined }
     }
   },
-  components: { Network, Headers }
+  components: { Network, Headers, QuicFields }
 }
 </script>

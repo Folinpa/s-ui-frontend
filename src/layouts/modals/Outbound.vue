@@ -53,6 +53,8 @@
               <Socks v-if="outbound.type == outTypes.SOCKS" :data="outbound" />
               <Http v-if="outbound.type == outTypes.HTTP" :data="outbound" />
               <Shadowsocks v-if="outbound.type == outTypes.Shadowsocks" direction="out" :data="outbound" />
+              <Snell v-if="outbound.type == outTypes.Snell" direction="out" :data="outbound" />
+              <Bridge v-if="outbound.type == outTypes.Bridge" direction="out" :data="outbound" />
               <Vmess v-if="outbound.type == outTypes.VMess" :data="outbound" />
               <Trojan v-if="outbound.type == outTypes.Trojan" :data="outbound" />
               <Hysteria v-if="outbound.type == outTypes.Hysteria" direction="out" :data="outbound" />
@@ -115,10 +117,11 @@ import Dial from '@/components/Dial.vue'
 import Multiplex from '@/components/Multiplex.vue'
 import Transport from '@/components/Transport.vue'
 import OutTLS from '@/components/tls/OutTLS.vue'
-import Direct from '@/components/protocols/Direct.vue'
 import Socks from '@/components/protocols/Socks.vue'
 import Http from '@/components/protocols/Http.vue'
 import Shadowsocks from '@/components/protocols/Shadowsocks.vue'
+import Snell from '@/components/protocols/Snell.vue'
+import Bridge from '@/components/protocols/Bridge.vue'
 import Vmess from '@/components/protocols/Vmess.vue'
 import Trojan from '@/components/protocols/Trojan.vue'
 import Wireguard from '@/components/protocols/Wireguard.vue'
@@ -208,8 +211,8 @@ export default {
     },
   },
   components: { DocLink, Dial, Multiplex, Transport, OutTLS,
-    Direct, Socks, Http, Shadowsocks, Vmess, Trojan,
+    Socks, Http, Shadowsocks, Vmess, Trojan,
     Wireguard, Hysteria, Naive, ShadowTls, Vless, Tuic,
-    Hysteria2, AnyTls, Tor, Ssh, Selector, UrlTest }
+    Hysteria2, AnyTls, Tor, Ssh, Selector, UrlTest, Snell, Bridge }
 }
 </script>
